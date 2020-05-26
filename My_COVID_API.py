@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 
 
 # ## Import the latest data 
-# 
+#  
 # The data is imported from the covidtracking.com website. 
 # 
 # The column Deaths per Positive case (DperP) is added. 
@@ -38,7 +38,7 @@ df['date'] = pd.to_datetime(df['date'], format = '%Y%m%d')
 
 #df.head()
 
-
+plt.close('all')
 # ## Subset the data for specific states 
 # ### First we look at Utah, where I live
 
@@ -98,21 +98,6 @@ plt.ylabel('Death Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.show()
 
-
-# In[9]:
-
-
-# fig, ax = plt.subplots(figsize = (12,6))    
-# fig = sns.barplot(x = 'date', y = 'totalTestResultsIncrease', data = UT, palette = 'Reds')
-
-# x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-# ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
-# plt.title('Utah New Test Results per Date', fontdict={'fontsize':20})
-# plt.xlabel('Date', fontdict={'fontsize':12})
-# plt.ylabel('New Test Results', fontdict={'fontsize':12})
-
-# #plt.savefig('Utah New Test Results per Date.png')
-# plt.show()
 
 
 # In[10]:
