@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+
+"""
+Created on Thu May 28 12:04:02 2020
+
+@author: David R McKenna
+"""
 # In[1]:
 
 
