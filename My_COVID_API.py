@@ -22,14 +22,12 @@ warnings.filterwarnings('ignore')
 #pd.__version__
 
 
-# ## Import the latest data 
-#  
-# The data is imported from the covidtracking.com website. 
-# 
-# The column Deaths per Positive case (DperP) is added. 
+
 
 # In[2]:
-
+    ### Import the latest data ###
+ 
+# The data is imported from the covidtracking.com website. 
 
 url = 'https://covidtracking.com/api/v1/states/daily.json'
 
@@ -38,27 +36,35 @@ r = requests.get(url)
 json_data = r.json()
 
 df = pd.json_normalize(json_data)
+
+# Add columns Deaths per Positive case (DperP), Positive per Test (PosPerTest),
+# and Total Increase Minus Hosptialized Increase (TotMinusHosptializedIncresase)
+
 df['DperP'] = df['death']/df['positive']
 df['PosPerTest']= df['positiveIncrease']/df['totalTestResultsIncrease']
+df['TotMinusHosptializedIncresase'] = np.abs(df['positiveIncrease'] - df['hospitalizedIncrease'])
+
+
 df['date'] = pd.to_datetime(df['date'], format = '%Y%m%d')
 
-#df.head()
 
 plt.close('all')
-# ## Subset the data for specific states 
-# ### First we look at Utah, where I live
+
 
 # In[3]:
+                 ### Subset the data for specific states ### 
 
+# First we look at Utah
 
-#    
-df['TotMinusHosptializedIncresase'] = np.abs(df['positiveIncrease'] - df['hospitalizedIncrease'])
 UT = df[df['state']=='UT']
+
+# Reove clear outliers, looks like they added too many (389) one day and the 
+# corrected that by adding a (-354) a couple days later.
+
 UT = UT[UT['hospitalizedIncrease']!=389]  
 UT = UT[UT['hospitalizedIncrease']> 0]
 
-
-#print(UT.hospitalizedIncrease.describe())
+# Create date ordinal for simplicity of plot labels
 
 UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
 
@@ -91,7 +97,7 @@ fig, ax = plt.subplots(figsize = (12,6))
 plt.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean, label='3 Day Average', color='red')
 plt.plot(UT['date_ordinal'], UT.rolling_mean2, label='7 Day Average', color='green')
-plt.plot(UT['date_ordinal'], UT.rolling_mean3, label='20 Day Average', color='c')
+plt.plot(UT['date_ordinal'], UT.rolling_mean3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
@@ -116,7 +122,7 @@ fig, ax = plt.subplots(figsize = (12,6))
 plt.bar(UT['date_ordinal'], UT['deathIncrease'], label='Death Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d, label='3 Day Average', color='red')
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d2, label='7 Day Average', color='green')
-plt.plot(UT['date_ordinal'], UT.rolling_mean_d3, label='20 Day Average', color='c')
+plt.plot(UT['date_ordinal'], UT.rolling_mean_d3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
@@ -125,6 +131,34 @@ plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('Utah_Death_Rolling_Avg.png')
+plt.show()
+
+#%%
+
+UT_1 = UT[UT['date'] >= '2020-04-05' ]
+
+UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods=-3)
+UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods=-7)
+UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods=-20)
+
+fig, ax = plt.subplots(figsize = (12,6)) 
+
+
+fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = UT, fit_reg=False)
+plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean, label='3 Day Average', color='red')
+plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean2, label='7 Day Average', color='green')
+plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color='blue')
+
+plt.legend(loc='upper right')
+ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max() )
+ax.set_ylim(0,0.5)
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+plt.title('UT Positve Per Test', fontdict={'fontsize':20})
+plt.xlabel('Date', fontdict={'fontsize':12})
+plt.ylabel('Positive/Test', fontdict={'fontsize':12})
+ax.set_xticklabels(new_labels, rotation = 45)
+
+plt.savefig('UT_Positive_Per_Test.png')
 plt.show()
 
 
@@ -168,31 +202,6 @@ plt.show()
 # ## Investigating the percentage of tests that return positive results:
 # ### If this number remains high it shows that we are not testing enough. 
 
-# In[8]:
-
-
-#UT=UT[UT['date']>= '2020-03-29']
-UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
-
-
-fig, ax = plt.subplots(figsize = (12,6)) 
-
-
-fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', 
-                  data = UT,lowess=True)
-ax.set_xlim(UT['date_ordinal'].min() +10, UT['date_ordinal'].max() + 1)
-ax.set_ylim(0,0.35)
-new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-plt.title('UT Positve Per Test', fontdict={'fontsize':20})
-plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Positive/Test', fontdict={'fontsize':12})
-ax.set_xticklabels(new_labels)
-
-plt.savefig('Utah_Positive_Per_Test.png')
-plt.show()
-
-
-# ## Compare stats with Nearest States and States with Similar Case Counts: 
 
 # In[9]:
 
@@ -230,7 +239,7 @@ plt.title('Nearest States: Death Total', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Tot. Deaths', fontdict={'fontsize':12})
 
-#plt.savefig('4C Daily Death Total.png')
+
 plt.show()
 
 
@@ -246,14 +255,14 @@ plt.title('Nearest States: Deaths per Case', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death per Case', fontdict={'fontsize':12})
 
-#plt.savefig('4C + ID & NV Deaths per Case.png')
+
 plt.show()
 
 
 
 
 CA = df[df['state']=='CA']
-#CA.head()
+CA.to_excel('CA.xlsx')
 
 
 
@@ -267,9 +276,11 @@ fig, ax = plt.subplots(figsize = (12,6))
 plt.bar(CA['date_ordinal'], CA['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(CA['date_ordinal'], CA.rolling_mean, label='3 Day Average', color='red')
 plt.plot(CA['date_ordinal'], CA.rolling_mean2, label='7 Day Average', color='green')
-plt.plot(CA['date_ordinal'], CA.rolling_mean3, label='20 Day Average', color='cyan')
+plt.plot(CA['date_ordinal'], CA.rolling_mean3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
+
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+ax.set_xlim(CA['date_ordinal'].min() , CA['date_ordinal'].max() )
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
 plt.title('California Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -277,7 +288,7 @@ plt.ylabel('Positive Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('CA_Increase_Rolling_Avg.png')
 plt.show()
-
+ 
 
 
 CA['rolling_mean_d'] = CA.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
@@ -287,13 +298,15 @@ CA['rolling_mean_d3'] = CA.loc[:,'deathIncrease'].rolling(20).mean().shift(perio
 CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordinal())
 
 fig, ax = plt.subplots(figsize = (12,6))
+
 plt.bar(CA['date_ordinal'], CA['deathIncrease'], label='Death Increase',color='grey')
 plt.plot(CA['date_ordinal'], CA.rolling_mean_d, label='3 Day Average', color='red')
 plt.plot(CA['date_ordinal'], CA.rolling_mean_d2, label='7 Day Average', color='green')
-plt.plot(CA['date_ordinal'], CA.rolling_mean_d3, label='20 Day Average', color='cyan')
+plt.plot(CA['date_ordinal'], CA.rolling_mean_d3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xlim(CA['date_ordinal'].min() , CA['date_ordinal'].max() )
+ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 plt.title('California Death Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death Increase', fontdict={'fontsize':12})
@@ -303,27 +316,36 @@ plt.savefig('CA_Death_Rolling_Avg.png')
 plt.show()
 
 
+#%%
 
-CA_1=CA[CA['date']>= '2020-03-29']
-CA_1['date_ordinal'] = pd.to_datetime(CA_1['date']).apply(lambda date: date.toordinal())
+CA_1 = CA[CA['date'] >= '2020-04-15' ]
+#CA_1 = CA
 
+
+CA_1['rolling_mean'] = CA_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods=-3)
+CA_1['rolling_mean2'] = CA_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods=-7)
+CA_1['rolling_mean3'] = CA_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods=-20)
 
 fig, ax = plt.subplots(figsize = (12,6)) 
 
 
-fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = CA_1, lowess=True)
-ax.set_xlim(CA_1['date_ordinal'].min() +10, CA_1['date_ordinal'].max() + 1)
+fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = CA, fit_reg=False)
+
+plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean, label='3 Day Average', color='red')
+plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean2, label='7 Day Average', color='green')
+plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean3, label='20 Day Average', color='blue')
+
+plt.legend(loc='upper right')
+ax.set_xlim(CA_1['date_ordinal'].min() , CA_1['date_ordinal'].max() )
 ax.set_ylim(0,0.5)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('CA Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
-ax.set_xticklabels(new_labels)
+ax.set_xticklabels(new_labels, rotation = 45)
 
 plt.savefig('CA_Positive_Per_Test.png')
 plt.show()
-
-
 
 
 
