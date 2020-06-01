@@ -72,6 +72,7 @@ plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive Increase', fontdict={'fontsize':12})
 plt.axis('tight')
+plt.savefig('Utah_Increase_Rolling_Avg.png')
 plt.show()
 
 
@@ -96,6 +97,7 @@ plt.title('Utah Death Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death Increase', fontdict={'fontsize':12})
 plt.axis('tight')
+plt.savefig('Utah_Death_Rolling_Avg.png')
 plt.show()
 
 
@@ -159,7 +161,7 @@ plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
 ax.set_xticklabels(new_labels)
 
-#plt.savefig('PosPerTest.png')
+plt.savefig('Utah_Positive_Per_Test.png')
 plt.show()
 
 
@@ -205,7 +207,6 @@ plt.ylabel('Tot. Deaths', fontdict={'fontsize':12})
 plt.show()
 
 
-# In[17]:
 
 
 fig, ax = plt.subplots(figsize = (12,6))    
@@ -223,13 +224,10 @@ plt.show()
 
 
 
-# In[28]:
-
 
 CA = df[df['state']=='CA']
 #CA.head()
 
-# In[30]:
 
 
 CA['rolling_mean'] = CA.loc[:,'positiveIncrease'].rolling(3).mean().shift(periods=-2)
@@ -250,10 +248,9 @@ plt.title('California Positive Increase Rolling Average', fontdict={'fontsize':2
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive Increase', fontdict={'fontsize':12})
 plt.axis('tight')
+plt.savefig('CA_Increase_Rolling_Avg.png')
 plt.show()
 
-
-# In[31]:
 
 
 CA['rolling_mean_d'] = CA.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
@@ -274,10 +271,10 @@ plt.title('California Death Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death Increase', fontdict={'fontsize':12})
 plt.axis('tight')
+
+plt.savefig('CA_Death_Rolling_Avg.png')
 plt.show()
 
-
-# In[32]:
 
 
 CA_1=CA[CA['date']>= '2020-03-29']
@@ -296,11 +293,9 @@ plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
 ax.set_xticklabels(new_labels)
 
-#plt.savefig('PosPerTest.png')
+plt.savefig('CA_Positive_Per_Test.png')
 plt.show()
 
-
-# In[ ]:
 
 
 
