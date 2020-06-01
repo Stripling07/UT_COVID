@@ -9,7 +9,7 @@ Created on Thu May 28 12:04:02 2020
 """
 # In[1]:
 
-
+import numpy as np
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt
@@ -51,13 +51,34 @@ plt.close('all')
 # In[3]:
 
 
+#    
+df['TotMinusHosptializedIncresase'] = np.abs(df['positiveIncrease'] - df['hospitalizedIncrease'])
 UT = df[df['state']=='UT']
-#UT.deathIncrease.value_counts()
+UT = UT[UT['hospitalizedIncrease']!=389]  
+UT = UT[UT['hospitalizedIncrease']> 0]
 
 
-#
+#print(UT.hospitalizedIncrease.describe())
 
-# In[7]:
+UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
+
+fig, ax = plt.subplots(figsize = (12,6))
+ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
+ax.bar(UT['date_ordinal'], UT['TotMinusHosptializedIncresase'], label='Non-Hospitalized Increase',color='blue',bottom=UT['hospitalizedIncrease'])
+ax.legend(loc='upper left')
+
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+
+plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
+plt.xlabel('Date', fontdict={'fontsize':12})
+plt.ylabel('Positive Increase', fontdict={'fontsize':12})
+plt.axis('tight')
+plt.savefig('Utah_Increase_Hospitalized.png')
+
+plt.show()
+
+# In[4]:
 
 
 UT['rolling_mean'] = UT.loc[:,'positiveIncrease'].rolling(3).mean().shift(periods=-3)
@@ -82,7 +103,7 @@ plt.savefig('Utah_Increase_Rolling_Avg.png')
 plt.show()
 
 
-# In[8]:
+# In[5]:
 
 
 UT['rolling_mean_d'] = UT.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
@@ -108,7 +129,7 @@ plt.show()
 
 
 
-# In[10]:
+# In[6]:
 
 
 fig, ax = plt.subplots(figsize = (12,6))    
@@ -126,7 +147,7 @@ plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
 plt.show()
 
 
-# In[11]:
+# In[7]:
 
 
 fig, ax = plt.subplots(figsize = (12,6))    
@@ -147,7 +168,7 @@ plt.show()
 # ## Investigating the percentage of tests that return positive results:
 # ### If this number remains high it shows that we are not testing enough. 
 
-# In[12]:
+# In[8]:
 
 
 #UT=UT[UT['date']>= '2020-03-29']
@@ -173,13 +194,13 @@ plt.show()
 
 # ## Compare stats with Nearest States and States with Similar Case Counts: 
 
-# In[14]:
+# In[9]:
 
 
 FourC = UT.append(df[df['state']=='ID']).append(df[df['state']=='CO']).append(df[df['state']=='AZ']).append(df[df['state']=='NM']).append(df[df['state']=='NV']).append(df[df['state']=='WY'])
 
 
-# In[15]:
+# In[10]:
 
 
 fig, ax = plt.subplots(figsize = (12,6))    
@@ -196,7 +217,7 @@ plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
 plt.show()
 
 
-# In[16]:
+# In[11]:
 
 
 fig, ax = plt.subplots(figsize = (12,6))    
