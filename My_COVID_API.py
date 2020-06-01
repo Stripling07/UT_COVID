@@ -53,7 +53,7 @@ plt.close('all')
 
 # In[3]:
                  ### Subset the data for specific states ### 
-
+sns.set()
 # First we look at Utah
 
 UT = df[df['state']=='UT']
