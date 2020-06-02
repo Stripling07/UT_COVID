@@ -47,8 +47,12 @@ df['TotMinusHosptializedIncresase'] = np.abs(df['positiveIncrease'] - df['hospit
 
 df['date'] = pd.to_datetime(df['date'], format = '%Y%m%d')
 
+df.set_index('date')
+
+
 
 plt.close('all')
+df.to_excel('df.xlsx')
 
 
 # In[3]:
@@ -58,23 +62,50 @@ sns.set()
 
 UT = df[df['state']=='UT']
 
+
+A = UT['hospitalizedIncrease'].loc[lambda x: x==389].index
+B = UT['hospitalizedIncrease'].loc[lambda x: x== -365].index
+C =UT['positiveIncrease'].loc[lambda x: x== 0].index
+
+UT.loc[A,'hospitalizedIncrease'] = 12
+UT.loc[B,'hospitalizedIncrease'] = 12
+
+
+UT.drop(C,inplace=True)
+
 # Reove clear outliers, looks like they added too many (389) one day and the 
 # corrected that by adding a (-354) a couple days later.
 
-UT = UT[UT['hospitalizedIncrease']!=389]  
-UT = UT[UT['hospitalizedIncrease']> 0]
 
+# UT = UT[UT['hospitalizedIncrease']!=389]  
+# UT = UT[UT['hospitalizedIncrease']> 0]
+
+UT.to_excel('df.xlsx')
+#%%
 # Create date ordinal for simplicity of plot labels
 
 UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
+
+OrangeDate = UT[UT['date']=='2020-04-28']['date_ordinal']
+OrangeDate = int(OrangeDate)
+
+YellowDate = UT[UT['date']=='2020-05-14']['date_ordinal']
+YellowDate = int(YellowDate)
 
 fig, ax = plt.subplots(figsize = (12,6))
 ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
 ax.bar(UT['date_ordinal'], UT['TotMinusHosptializedIncresase'], label='Non-Hospitalized Increase',color='blue',bottom=UT['hospitalizedIncrease'])
 ax.legend(loc='upper left')
 
+
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+
+
+ax.axvline( x=OrangeDate, color='orange')
+ax.annotate('Code Orange Date', (OrangeDate - 15,322),color='gray')
+ax.axvline( x=YellowDate, color='yellow')
+ax.annotate('Code Yellow Date', (YellowDate - 15,302),color='gray')
 
 plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -87,24 +118,36 @@ plt.show()
 # In[4]:
 
 
+
 UT['rolling_mean'] = UT.loc[:,'positiveIncrease'].rolling(3).mean().shift(periods=-3)
 UT['rolling_mean2'] = UT.loc[:,'positiveIncrease'].rolling(7).mean().shift(periods=-7)
 UT['rolling_mean3'] = UT.loc[:,'positiveIncrease'].rolling(20).mean().shift(periods=-20)
 #x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
+
+
 
 fig, ax = plt.subplots(figsize = (12,6))
 plt.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean, label='3 Day Average', color='red')
 plt.plot(UT['date_ordinal'], UT.rolling_mean2, label='7 Day Average', color='green')
 plt.plot(UT['date_ordinal'], UT.rolling_mean3, label='20 Day Average', color='blue')
+
+
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+
+
+ax.axvline( x=OrangeDate, color='orange')
+ax.annotate('Code Orange Date', (OrangeDate - 15,322),color='gray')
+ax.axvline( x=YellowDate, color='yellow')
+ax.annotate('Code Yellow Date', (YellowDate - 15,302),color='gray')
+
 plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive Increase', fontdict={'fontsize':12})
-plt.axis('tight')
+plt.axis('auto')
+
 plt.savefig('Utah_Increase_Rolling_Avg.png')
 plt.show()
 
@@ -137,9 +180,9 @@ plt.show()
 
 UT_1 = UT[UT['date'] >= '2020-04-05' ]
 
-UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods=-3)
-UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods=-7)
-UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods=-20)
+UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods= -3)
+UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
+UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods= -20)
 
 fig, ax = plt.subplots(figsize = (12,6)) 
 
@@ -151,7 +194,7 @@ plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color
 
 plt.legend(loc='upper right')
 ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max() )
-ax.set_ylim(0,0.5)
+ax.set_ylim(0,0.3)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('UT Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
