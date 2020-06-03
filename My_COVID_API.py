@@ -105,12 +105,12 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
 
 
-ax.axvline( x=OrangeDate, color='orange')
-ax.annotate('Code Orange Date', (OrangeDate - 2,355),color='gray',rotation=90)
-ax.axvline( x=YellowDate, color='yellow')
-ax.annotate('Code Yellow Date', (YellowDate - 2,355),color='gray',rotation=90)
-ax.axvline( x=ProtestDate, color='black')
-ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90)
+ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
+ax.annotate('Code Orange Date', (OrangeDate - 2,340),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
+ax.annotate('Code Yellow Date', (YellowDate - 2,340),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90,fontsize=13)
 
 plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -142,12 +142,12 @@ plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
-ax.axvline( x=OrangeDate, color='orange')
-ax.annotate('Code Orange Date', (OrangeDate - 2,250),color='gray',rotation=90)
-ax.axvline( x=YellowDate, color='yellow')
-ax.annotate('Code Yellow Date', (YellowDate - 2,250),color='gray',rotation=90)
-ax.axvline( x=ProtestDate, color='black')
-ax.annotate('Protest Start Date', (ProtestDate - 3 ,250),color='black',rotation=90)
+ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
+ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
+ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.annotate('Protest Start Date', (ProtestDate - 3 ,240),color='black',rotation=90,fontsize=13)
 
 plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -336,6 +336,16 @@ plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('CA_Increase_Rolling_Avg.png')
+
+
+ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
+ax.annotate('Code Orange Date', (OrangeDate - 2,2500),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
+ax.annotate('Code Yellow Date', (YellowDate - 2,2500),color='gray',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,2700),color='black',rotation=90,fontsize=13)
+
+
 plt.show()
  
 
@@ -392,6 +402,9 @@ plt.title('CA Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
 ax.set_xticklabels(new_labels, rotation = 45)
+
+
+
 
 plt.savefig('CA_Positive_Per_Test.png')
 plt.show()
