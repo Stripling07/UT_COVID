@@ -80,7 +80,7 @@ UT.drop(C,inplace=True)
 # UT = UT[UT['hospitalizedIncrease']!=389]  
 # UT = UT[UT['hospitalizedIncrease']> 0]
 
-UT.to_excel('df.xlsx')
+
 #%%
 # Create date ordinal for simplicity of plot labels
 
@@ -308,10 +308,10 @@ plt.ylabel('Death per Case', fontdict={'fontsize':12})
 plt.show()
 
 
-
+#%%
 
 CA = df[df['state']=='CA']
-CA.to_excel('CA.xlsx')
+#CA.to_excel('CA.xlsx')
 
 
 
@@ -338,10 +338,7 @@ plt.axis('tight')
 plt.savefig('CA_Increase_Rolling_Avg.png')
 
 
-ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
-ax.annotate('Code Orange Date', (OrangeDate - 2,2500),color='gray',rotation=90,fontsize=13)
-ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
-ax.annotate('Code Yellow Date', (YellowDate - 2,2500),color='gray',rotation=90,fontsize=13)
+
 ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
 ax.annotate('Protest Start Date', (ProtestDate - 2 ,2700),color='black',rotation=90,fontsize=13)
 
@@ -408,6 +405,14 @@ ax.set_xticklabels(new_labels, rotation = 45)
 
 plt.savefig('CA_Positive_Per_Test.png')
 plt.show()
+
+
+#%%
+st_tot = df.groupby('state')['positiveIncrease'].sum()
+
+
+print(st_tot.sort_values(ascending=False))
+
 
 
 
