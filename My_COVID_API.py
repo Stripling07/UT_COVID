@@ -92,6 +92,9 @@ OrangeDate = int(OrangeDate)
 YellowDate = UT[UT['date']=='2020-05-14']['date_ordinal']
 YellowDate = int(YellowDate)
 
+ProtestDate = UT[UT['date']=='2020-05-30']['date_ordinal']
+ProtestDate = int(ProtestDate)
+
 fig, ax = plt.subplots(figsize = (12,6))
 ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
 ax.bar(UT['date_ordinal'], UT['TotMinusHosptializedIncresase'], label='Non-Hospitalized Increase',color='blue',bottom=UT['hospitalizedIncrease'])
@@ -103,9 +106,11 @@ ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsiz
 
 
 ax.axvline( x=OrangeDate, color='orange')
-ax.annotate('Code Orange Date', (OrangeDate - 15,322),color='gray')
+ax.annotate('Code Orange Date', (OrangeDate - 2,355),color='gray',rotation=90)
 ax.axvline( x=YellowDate, color='yellow')
-ax.annotate('Code Yellow Date', (YellowDate - 15,302),color='gray')
+ax.annotate('Code Yellow Date', (YellowDate - 2,355),color='gray',rotation=90)
+ax.axvline( x=ProtestDate, color='black')
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90)
 
 plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -137,11 +142,12 @@ plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
-
 ax.axvline( x=OrangeDate, color='orange')
-ax.annotate('Code Orange Date', (OrangeDate - 15,322),color='gray')
+ax.annotate('Code Orange Date', (OrangeDate - 2,250),color='gray',rotation=90)
 ax.axvline( x=YellowDate, color='yellow')
-ax.annotate('Code Yellow Date', (YellowDate - 15,302),color='gray')
+ax.annotate('Code Yellow Date', (YellowDate - 2,250),color='gray',rotation=90)
+ax.axvline( x=ProtestDate, color='black')
+ax.annotate('Protest Start Date', (ProtestDate - 3 ,250),color='black',rotation=90)
 
 plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
