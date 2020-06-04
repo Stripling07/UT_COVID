@@ -420,23 +420,34 @@ plt.show()
 
 
 #%%
-st_tot = df.groupby('state')['positiveIncrease'].sum()
+
+df_1 = df[['state','date','positiveIncrease','deathIncrease']].reset_index()
+
+today = str(df.date.max())
+
+df_1['date_mod'] = pd.to_datetime(df_1['date'], format= '%Y%m%d')
+df_1.set_index(['state','date_mod'],inplace=True)
+
+df_1.sort_index(inplace=True)
+
+df_1['date_ordinal'] = pd.to_datetime(df_1['date']).apply(lambda date: date.toordinal())
 
 
-print(st_tot.sort_values(ascending=False))
+
+df_1['posDiff'] = df_1.groupby(level='state')['positiveIncrease'].apply(lambda x: (x.rolling(7).sum() / 7))
 
 
-#%%
 
-state = df.groupby(['date','state'])['positiveIncrease'].sum().dropna()
 
-roll_Inc = state.rolling(window = 10).sum()
-roll_Inc = pd.DataFrame(roll_Inc)
-#UT_roll = roll_Inc[roll_Inc['state']=='UT']
-state.to_excel('state.xlsx')
-roll_Inc.to_excel('roll.xlsx')
-#UT_roll.to_excel('UT_roll.xlsx')
 
-print(state)
-#Inc_Roll = df.
+largest = df_1[df_1['date']==today]['posDiff'].nlargest(10).astype(int)
+
+
+
+df_2 = pd.DataFrame(largest).reset_index()
+plt.bar(df_2.state,df_2.posDiff)
+plt.title('States with Largest 7 day Avg Increase', fontsize=16)
+plt.ylabel('7 Day Avg Case Increase')
+
+
 
