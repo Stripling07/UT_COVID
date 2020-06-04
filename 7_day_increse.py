@@ -80,3 +80,35 @@ plt.ylabel('7 Day Avg Case Increase')
 
 #%%
 
+
+ten_states = df_2.state
+
+
+
+df_1.reset_index(inplace=True)
+df_3 = pd.DataFrame()
+
+for state in ten_states :
+
+    
+    data = df_1[df_1['state']==str(state)]
+   
+
+    df_3 = pd.concat([df_3,data])
+    
+    
+  
+# df_3.to_excel('df_3.xlsx')    
+
+fig, ax = plt.subplots(figsize = (12,6))
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+
+
+ax.sns.pointplot(data=df_3, x='date_ordinal',y='posDiff',hue='state', marker = '.')
+
+ax.set_xlim(df_3['date_ordinal'].min()  , df_3['date_ordinal'].max() )
+ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+
+
+plt.show()
+    
