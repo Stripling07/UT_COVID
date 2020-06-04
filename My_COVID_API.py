@@ -92,7 +92,7 @@ OrangeDate = int(OrangeDate)
 YellowDate = UT[UT['date']=='2020-05-14']['date_ordinal']
 YellowDate = int(YellowDate)
 
-ProtestDate = UT[UT['date']=='2020-05-30']['date_ordinal']
+ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
 ProtestDate = int(ProtestDate)
 
 fig, ax = plt.subplots(figsize = (12,6))
@@ -105,12 +105,19 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
 
 
-ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
-ax.annotate('Code Orange Date', (OrangeDate - 2,340),color='gray',rotation=90,fontsize=13)
-ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
-ax.annotate('Code Yellow Date', (YellowDate - 2,340),color='gray',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.axvline(x=OrangeDate, color='orange', linewidth=2)
+ax.annotate('Code Orange Date', (OrangeDate - 2,340),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=2)
+ax.annotate('Code Yellow Date', (YellowDate - 2,340),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='black', linewidth=2)
 ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90,fontsize=13)
+
+ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+
+ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
+
+ax.axvline( x=ProtestDate + 7, color='black', linewidth=2, linestyle = '--')
+
 
 plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -142,12 +149,17 @@ plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
-ax.axvline(x=OrangeDate, color='orange', linewidth=3, linestyle = '--')
-ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='gray',rotation=90,fontsize=13)
-ax.axvline( x=YellowDate, color='yellow', linewidth=3, linestyle = '--')
-ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='gray',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.axvline(x=OrangeDate, color='orange', linewidth=2)
+ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=2)
+ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='black', linewidth=2)
 ax.annotate('Protest Start Date', (ProtestDate - 3 ,240),color='black',rotation=90,fontsize=13)
+
+ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='black', linewidth=2, linestyle = '--')
+
 
 plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -158,7 +170,7 @@ plt.savefig('Utah_Increase_Rolling_Avg.png')
 plt.show()
 
 
-# In[5]:
+ # In[5]:
 
 
 UT['rolling_mean_d'] = UT.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
@@ -338,8 +350,8 @@ plt.axis('tight')
 plt.savefig('CA_Increase_Rolling_Avg.png')
 
 
-
-ax.axvline( x=ProtestDate, color='black', linewidth=3, linestyle = '--')
+ax.axvline( x=ProtestDate, color='black', linewidth=3)
+ax.axvline( x=ProtestDate + 7, color='black', linewidth=3, linestyle = '--')
 ax.annotate('Protest Start Date', (ProtestDate - 2 ,2700),color='black',rotation=90,fontsize=13)
 
 
@@ -414,5 +426,17 @@ st_tot = df.groupby('state')['positiveIncrease'].sum()
 print(st_tot.sort_values(ascending=False))
 
 
+#%%
 
+state = df.groupby(['date','state'])['positiveIncrease'].sum().dropna()
+
+roll_Inc = state.rolling(window = 10).sum()
+roll_Inc = pd.DataFrame(roll_Inc)
+#UT_roll = roll_Inc[roll_Inc['state']=='UT']
+state.to_excel('state.xlsx')
+roll_Inc.to_excel('roll.xlsx')
+#UT_roll.to_excel('UT_roll.xlsx')
+
+print(state)
+#Inc_Roll = df.
 
