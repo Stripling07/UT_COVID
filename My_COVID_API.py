@@ -109,14 +109,14 @@ ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,340),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
 ax.annotate('Code Yellow Date', (YellowDate - 2,340),color='black',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='black', linewidth=2)
+ax.axvline( x=ProtestDate, color='purple', linewidth=2)
 ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90,fontsize=13)
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
 
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 
-ax.axvline( x=ProtestDate + 7, color='black', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
 
 plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
@@ -153,12 +153,12 @@ ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
 ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='black', linewidth=2)
-ax.annotate('Protest Start Date', (ProtestDate - 3 ,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
-ax.axvline( x=ProtestDate + 7, color='black', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
 
 plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
