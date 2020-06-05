@@ -211,7 +211,7 @@ plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean2, label='7 Day Average', color=
 plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color='blue')
 
 plt.legend(loc='upper right')
-ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max() )
+ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max()+1 )
 ax.set_ylim(0,0.3)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('UT Positve Per Test', fontdict={'fontsize':20})
@@ -404,7 +404,7 @@ plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean2, label='7 Day Average', color=
 plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean3, label='20 Day Average', color='blue')
 
 plt.legend(loc='upper right')
-ax.set_xlim(CA_1['date_ordinal'].min() , CA_1['date_ordinal'].max() )
+ax.set_xlim(CA_1['date_ordinal'].min() , CA_1['date_ordinal'].max()+ 1 )
 ax.set_ylim(0,0.5)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('CA Positve Per Test', fontdict={'fontsize':20})
