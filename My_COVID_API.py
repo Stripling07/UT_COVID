@@ -95,6 +95,9 @@ ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
 ProtestDate = int(ProtestDate)
 
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
 
 ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Non-Hospitalized Increase',color='blue')
 ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
@@ -102,7 +105,7 @@ ax.legend(loc='upper left')
 
 
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
@@ -136,7 +139,13 @@ UT['rolling_mean3'] = UT.loc[:,'positiveIncrease'].rolling(20).mean().shift(peri
 
 
 
+
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
+
 plt.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean, label='3 Day Average', color='red')
 plt.plot(UT['date_ordinal'], UT.rolling_mean2, label='7 Day Average', color='green')
@@ -178,7 +187,12 @@ UT['rolling_mean_d3'] = UT.loc[:,'deathIncrease'].rolling(20).mean().shift(perio
 #x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
 UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
 
+
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
 plt.bar(UT['date_ordinal'], UT['deathIncrease'], label='Death Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d, label='3 Day Average', color='red')
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d2, label='7 Day Average', color='green')
@@ -204,7 +218,11 @@ UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods=
 UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
 UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods= -20)
 
-fig, ax = plt.subplots(figsize = (12,6)) 
+
+fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
 
 
 fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = UT, fit_reg=False)
@@ -241,7 +259,11 @@ YellowDate = int(YellowDate)
 ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
 ProtestDate = int(ProtestDate)
 
+
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
 
 ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'], label='Total Test Increase',color='blue')
 ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Tests',color='red')
@@ -275,8 +297,12 @@ plt.show()
 
 # In[6]:
 
-
-fig, ax = plt.subplots(figsize = (12,6))    
+ 
+fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+  
 fig = sns.pointplot(x = 'date', y = 'positive',
                     data = UT, markers = '.')
 
@@ -321,7 +347,11 @@ FourC = UT.append(df[df['state']=='ID']).append(df[df['state']=='CO']).append(df
 # In[10]:
 
 
-fig, ax = plt.subplots(figsize = (12,6))    
+fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+   
 fig = sns.pointplot(x = 'date', y = 'positive',hue='state',
                     data = FourC, palette = 'Set1', markers ='.')
 
@@ -338,7 +368,13 @@ plt.show()
 # In[11]:
 
 
-fig, ax = plt.subplots(figsize = (12,6))    
+fig, ax = plt.subplots(figsize = (12,6)) 
+
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
+   
 fig = sns.pointplot(x = 'date', y = 'death',hue='state', 
                     data = FourC, palette = 'Set1', markers ='.')
 
@@ -381,7 +417,13 @@ CA['rolling_mean3'] = CA.loc[:,'positiveIncrease'].rolling(20).mean().shift(peri
 #x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
 CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordinal())
 
+
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
+
 plt.bar(CA['date_ordinal'], CA['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(CA['date_ordinal'], CA.rolling_mean, label='3 Day Average', color='red')
 plt.plot(CA['date_ordinal'], CA.rolling_mean2, label='7 Day Average', color='green')
@@ -414,6 +456,10 @@ CA['rolling_mean_d3'] = CA.loc[:,'deathIncrease'].rolling(20).mean().shift(perio
 CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordinal())
 
 fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
 
 plt.bar(CA['date_ordinal'], CA['deathIncrease'], label='Death Increase',color='grey')
 plt.plot(CA['date_ordinal'], CA.rolling_mean_d, label='3 Day Average', color='red')
@@ -442,7 +488,11 @@ CA_1['rolling_mean'] = CA_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods=
 CA_1['rolling_mean2'] = CA_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods=-7)
 CA_1['rolling_mean3'] = CA_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods=-20)
 
-fig, ax = plt.subplots(figsize = (12,6)) 
+fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+
 
 
 fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = CA, fit_reg=False)
@@ -490,6 +540,10 @@ df_1['posDiff'] = df_1.groupby(level='state')['positiveIncrease'].apply(lambda x
 
 largest = df_1[df_1['date']==today]['posDiff'].nlargest(10).astype(int)
 
+fig, ax = plt.subplots(figsize = (12,6))
+fig.text(0.91, 0.15, 'Property David McKenna',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
 
 
 df_2 = pd.DataFrame(largest).reset_index()
