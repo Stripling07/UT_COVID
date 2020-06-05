@@ -111,4 +111,8 @@ ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsiz
 
 
 plt.show()
-    
+
+#%%
+
+
+

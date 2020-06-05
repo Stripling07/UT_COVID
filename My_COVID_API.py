@@ -83,7 +83,6 @@ UT.drop(C,inplace=True)
 
 #%%
 # Create date ordinal for simplicity of plot labels
-
 UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
 
 OrangeDate = UT[UT['date']=='2020-04-28']['date_ordinal']
@@ -96,32 +95,31 @@ ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
 ProtestDate = int(ProtestDate)
 
 fig, ax = plt.subplots(figsize = (12,6))
+
+ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Non-Hospitalized Increase',color='blue')
 ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
-ax.bar(UT['date_ordinal'], UT['TotMinusHosptializedIncresase'], label='Non-Hospitalized Increase',color='blue',bottom=UT['hospitalizedIncrease'])
 ax.legend(loc='upper left')
 
 
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
 
-
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
-ax.annotate('Code Orange Date', (OrangeDate - 2,340),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
-ax.annotate('Code Yellow Date', (YellowDate - 2,340),color='black',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='purple', linewidth=2)
-ax.annotate('Protest Start Date', (ProtestDate - 2 ,355),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
-
+ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
-
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
 
-plt.title('Utah Positive Increase (non)Hospitalized', fontdict={'fontsize':20})
+plt.title('Utah Case Increase (non)Hospitalized', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Positive Increase', fontdict={'fontsize':12})
+plt.ylabel('Case Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('Utah_Increase_Hospitalized.png')
 
@@ -157,13 +155,14 @@ ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
 ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
 
-plt.title('Utah Positive Increase Rolling Average', fontdict={'fontsize':20})
+plt.title('Utah Case Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Positive Increase', fontdict={'fontsize':12})
+plt.ylabel('Case Increase', fontdict={'fontsize':12})
 plt.axis('auto')
 
 plt.savefig('Utah_Increase_Rolling_Avg.png')
@@ -187,9 +186,9 @@ plt.plot(UT['date_ordinal'], UT.rolling_mean_d3, label='20 Day Average', color='
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
-plt.title('Utah Death Increase Rolling Average', fontdict={'fontsize':20})
+plt.title('Utah Deaths Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Death Increase', fontdict={'fontsize':12})
+plt.ylabel('Deaths Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('Utah_Death_Rolling_Avg.png')
 plt.show()
