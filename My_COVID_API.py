@@ -195,6 +195,9 @@ plt.show()
 
 #%%
 
+# ## Investigating the percentage of tests that return positive results:
+# ### If this number remains high it shows that we are not testing enough. 
+
 UT_1 = UT[UT['date'] >= '2020-04-05' ]
 
 UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods= -3)
@@ -221,6 +224,53 @@ ax.set_xticklabels(new_labels, rotation = 45)
 plt.savefig('UT_Positive_Per_Test.png')
 plt.show()
 
+#%%
+
+UT = df[df['state']=='UT']
+
+UT.to_excel('UT.xlsx')
+
+UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
+
+OrangeDate = UT[UT['date']=='2020-04-28']['date_ordinal']
+OrangeDate = int(OrangeDate)
+
+YellowDate = UT[UT['date']=='2020-05-14']['date_ordinal']
+YellowDate = int(YellowDate)
+
+ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
+ProtestDate = int(ProtestDate)
+
+fig, ax = plt.subplots(figsize = (12,6))
+
+ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'], label='Total Test Increase',color='blue')
+ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Tests',color='red')
+ax.legend(loc='upper left')
+
+
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+
+ax.axvline(x=OrangeDate, color='orange', linewidth=2)
+# ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=2)
+# ax.annotate'Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
+# ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+
+ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+# ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
+
+
+plt.title('Utah Test Increase', fontdict={'fontsize':20})
+plt.xlabel('Date', fontdict={'fontsize':12})
+plt.ylabel('Test Increase', fontdict={'fontsize':12})
+plt.axis('tight')
+plt.savefig('Utah_Increase_Test.png')
+
+plt.show()
 
 
 # In[6]:
@@ -244,23 +294,22 @@ plt.show()
 # In[7]:
 
 
-fig, ax = plt.subplots(figsize = (12,6))    
-fig = sns.pointplot(x = 'date', y = 'positive',
-                    data = UT, markers='.')
+# fig, ax = plt.subplots(figsize = (12,6))    
+# fig = sns.pointplot(x = 'date', y = 'positive',
+#                     data = UT, markers='.')
 
-x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
-plt.title('Utah Total Cases (log)', fontdict={'fontsize':20})
-plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
-ax.set( yscale='log')
+# x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
+# ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
+# plt.title('Utah Total Cases (log)', fontdict={'fontsize':20})
+# plt.xlabel('Date', fontdict={'fontsize':12})
+# plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
+# ax.set( yscale='log')
 
-#plt.savefig('Utah Total Cases (log).png')
-plt.show()
+# #plt.savefig('Utah Total Cases (log).png')
+# plt.show()
 
 
-# ## Investigating the percentage of tests that return positive results:
-# ### If this number remains high it shows that we are not testing enough. 
+
 
 
 # In[9]:
