@@ -60,8 +60,16 @@ df.to_excel('df.xlsx')
 sns.set()
 # First we look at Utah
 
-UT = df[df['state']=='UT']
+def watermark():
+    """ Puts Property Of David McKenna on LRH corner of plots"""
+    
+    fig.text(0.92, 0.15, 'Property of David McKenna \n data from: covidtracking.com',
+         fontsize=10, color='gray', rotation=270,
+         ha='right', va='bottom', alpha=0.75)
+    
 
+UT = df[df['state']=='UT']
+UT= UT[UT['date'] >= '2020-03-15' ]
 
 A = UT['hospitalizedIncrease'].loc[lambda x: x==389].index
 B = UT['hospitalizedIncrease'].loc[lambda x: x== -365].index
@@ -91,15 +99,18 @@ OrangeDate = int(OrangeDate)
 YellowDate = UT[UT['date']=='2020-05-14']['date_ordinal']
 YellowDate = int(YellowDate)
 
+MemorialDay = UT[UT['date']=='2020-05-25']['date_ordinal']
+MemorialDay = int(MemorialDay)
+
 ProtestDate = UT[UT['date']=='2020-05-29']['date_ordinal']
 ProtestDate = int(ProtestDate)
 
-fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+text_loc = max(UT['positiveIncrease'])-250
 
-ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Non-Hospitalized Increase',color='blue')
+fig, ax = plt.subplots(figsize = (12,6))
+watermark()
+
+ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Case Increase',color='blue')
 ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
 ax.legend(loc='upper left')
 
@@ -108,14 +119,18 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
-ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange Date', (OrangeDate - 2,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
-ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Yellow Date', (YellowDate - 2,text_loc),color='black',rotation=90,fontsize=13)
+ax.axvline( x=MemorialDay, color='red', linewidth=1.5)
+ax.annotate('Memorial Day', (MemorialDay - 2 ,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
-ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,text_loc),color='black',rotation=90,fontsize=13)
+
+
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
-ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange + 7-Days', (OrangeDate +5,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
@@ -141,9 +156,7 @@ UT['rolling_mean3'] = UT.loc[:,'positiveIncrease'].rolling(20).mean().shift(peri
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+watermark()
 
 
 plt.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Increase',color='grey')
@@ -157,14 +170,16 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
-ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange Date', (OrangeDate - 2,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
-ax.annotate('Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Yellow Date', (YellowDate - 2,text_loc),color='black',rotation=90,fontsize=13)
+ax.axvline( x=MemorialDay, color='red', linewidth=1.5)
+ax.annotate('Memorial Day', (MemorialDay - 2 ,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
-ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
-
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
-ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange + 7-Days', (OrangeDate +5,text_loc),color='black',rotation=90,fontsize=13)
+
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
@@ -189,9 +204,7 @@ UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordina
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+watermark()
 
 plt.bar(UT['date_ordinal'], UT['deathIncrease'], label='Death Increase',color='grey')
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d, label='3 Day Average', color='red')
@@ -212,7 +225,7 @@ plt.show()
 # ## Investigating the percentage of tests that return positive results:
 # ### If this number remains high it shows that we are not testing enough. 
 
-UT_1 = UT[UT['date'] >= '2020-04-05' ]
+UT_1 = UT[UT['date'] >= '2020-04-15' ]
 
 UT_1['rolling_mean'] = UT_1.loc[:,'PosPerTest'].rolling(3).mean().shift(periods= -3)
 UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
@@ -220,10 +233,7 @@ UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(period
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-
+watermark()
 
 fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = UT, fit_reg=False)
 plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean, label='3 Day Average', color='red')
@@ -244,11 +254,11 @@ plt.show()
 
 #%%
 
-UT = df[df['state']=='UT']
+# UT = df[df['state']=='UT']
 
-UT.to_excel('UT.xlsx')
+# UT.to_excel('UT.xlsx')
 
-UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
+# UT['date_ordinal'] = pd.to_datetime(UT['date']).apply(lambda date: date.toordinal())
 
 OrangeDate = UT[UT['date']=='2020-04-28']['date_ordinal']
 OrangeDate = int(OrangeDate)
@@ -261,11 +271,9 @@ ProtestDate = int(ProtestDate)
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+watermark()
 
-ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'], label='Total Test Increase',color='blue')
+ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'], label='Total Test Increase',color='green')
 ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Tests',color='red')
 ax.legend(loc='upper left')
 
@@ -299,9 +307,7 @@ plt.show()
 
  
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+watermark()
   
 fig = sns.pointplot(x = 'date', y = 'positive',
                     data = UT, markers = '.')
@@ -348,10 +354,8 @@ FourC = UT.append(df[df['state']=='ID']).append(df[df['state']=='CO']).append(df
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-   
+watermark()
+
 fig = sns.pointplot(x = 'date', y = 'positive',hue='state',
                     data = FourC, palette = 'Set1', markers ='.')
 
@@ -369,12 +373,8 @@ plt.show()
 
 
 fig, ax = plt.subplots(figsize = (12,6)) 
+watermark()
 
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-
-   
 fig = sns.pointplot(x = 'date', y = 'death',hue='state', 
                     data = FourC, palette = 'Set1', markers ='.')
 
@@ -408,7 +408,7 @@ plt.show()
 
 CA = df[df['state']=='CA']
 #CA.to_excel('CA.xlsx')
-
+text_loc = max(CA['positiveIncrease'])-1000
 
 
 CA['rolling_mean'] = CA.loc[:,'positiveIncrease'].rolling(3).mean().shift(periods=-2)
@@ -419,10 +419,7 @@ CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordina
 
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-
+watermark()
 
 plt.bar(CA['date_ordinal'], CA['positiveIncrease'], label='Positive Increase',color='grey')
 plt.plot(CA['date_ordinal'], CA.rolling_mean, label='3 Day Average', color='red')
@@ -439,15 +436,14 @@ plt.ylabel('Positive Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('CA_Increase_Rolling_Avg.png')
 
-
+ax.axvline( x=MemorialDay, color='red', linewidth=1.5)
+ax.annotate('Memorial Day', (MemorialDay - 2 ,text_loc),color='black',rotation=90,fontsize=13)
 ax.axvline( x=ProtestDate, color='black', linewidth=3)
 ax.axvline( x=ProtestDate + 7, color='black', linewidth=3, linestyle = '--')
-ax.annotate('Protest Start Date', (ProtestDate - 2 ,2700),color='black',rotation=90,fontsize=13)
-
-
+ax.annotate('Protest Start Date', (ProtestDate - 2 ,text_loc),color='black',rotation=90,fontsize=13)
+plt.savefig('CA_Case_Rolling_Avg.png')
 plt.show()
  
-
 
 CA['rolling_mean_d'] = CA.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
 CA['rolling_mean_d2'] = CA.loc[:,'deathIncrease'].rolling(7).mean().shift(periods=-6)
@@ -456,9 +452,7 @@ CA['rolling_mean_d3'] = CA.loc[:,'deathIncrease'].rolling(20).mean().shift(perio
 CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordinal())
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
+watermark()
 
 
 plt.bar(CA['date_ordinal'], CA['deathIncrease'], label='Death Increase',color='grey')
@@ -467,6 +461,8 @@ plt.plot(CA['date_ordinal'], CA.rolling_mean_d2, label='7 Day Average', color='g
 plt.plot(CA['date_ordinal'], CA.rolling_mean_d3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+
+
 ax.set_xlim(CA['date_ordinal'].min() , CA['date_ordinal'].max() )
 ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
 plt.title('California Death Increase Rolling Average', fontdict={'fontsize':20})
@@ -489,14 +485,9 @@ CA_1['rolling_mean2'] = CA_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods
 CA_1['rolling_mean3'] = CA_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods=-20)
 
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-
-
+watermark()
 
 fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = CA, fit_reg=False)
-
 plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean, label='3 Day Average', color='red')
 plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean2, label='7 Day Average', color='green')
 plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean3, label='20 Day Average', color='blue')
@@ -511,8 +502,6 @@ plt.ylabel('Positive/Test', fontdict={'fontsize':12})
 ax.set_xticklabels(new_labels, rotation = 45)
 
 
-
-
 plt.savefig('CA_Positive_Per_Test.png')
 plt.show()
 
@@ -525,31 +514,20 @@ today = str(df.date.max())
 
 df_1['date_mod'] = pd.to_datetime(df_1['date'], format= '%Y%m%d')
 df_1.set_index(['state','date_mod'],inplace=True)
-
 df_1.sort_index(inplace=True)
-
 df_1['date_ordinal'] = pd.to_datetime(df_1['date']).apply(lambda date: date.toordinal())
-
-
-
 df_1['posDiff'] = df_1.groupby(level='state')['positiveIncrease'].apply(lambda x: (x.rolling(7).sum() / 7))
 
-
-
-
-
 largest = df_1[df_1['date']==today]['posDiff'].nlargest(10).astype(int)
-
 fig, ax = plt.subplots(figsize = (12,6))
-fig.text(0.91, 0.15, 'Property David McKenna',
-         fontsize=10, color='gray', rotation=270,
-         ha='right', va='bottom', alpha=0.75)
-
+watermark()
 
 df_2 = pd.DataFrame(largest).reset_index()
 plt.bar(df_2.state,df_2.posDiff)
 plt.title('States with Largest 7 day Avg Increase', fontsize=16)
 plt.ylabel('7 Day Avg Case Increase')
+
+plt.savefig('Top_Ten_Increase.png')
 
 
 
