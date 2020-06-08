@@ -70,6 +70,11 @@ plt.bar(df_2.state,df_2.posDiff)
 plt.title('States with Largest 7 day Avg Increase', fontsize=16)
 plt.ylabel('7 Day Avg Case Increase')
 
+plt.show()
+
+
+
+
 
 
 
@@ -110,6 +115,14 @@ plt.ylabel('7 Day Avg Case Increase')
 #%%
 
 UT = df[df['state']=='UT']
+#UT= UT[UT['date'] >= '2020-03-15' ]
+
+A = UT['hospitalizedIncrease'].loc[lambda x: x==389].index
+B = UT['hospitalizedIncrease'].loc[lambda x: x== -365].index
+C =UT['positiveIncrease'].loc[lambda x: x== 0].index
+
+UT.loc[A,'hospitalizedIncrease'] = 12
+UT.loc[B,'hospitalizedIncrease'] = 12
 
 UT.to_excel('UT.xlsx')
 
@@ -152,6 +165,51 @@ plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Test Increase', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('Utah_Increase_Test.png')
+
+plt.show()
+
+#%%
+    ###  Populate UT['icuIncrease] ###
+    
+UT.sort_index()
+
+UT['PreviousDayICU'] = UT['inIcuCumulative'].shift(-1)
+
+for row in UT.iterrows() :
+    UT['icuIncrease'] = UT['inIcuCumulative'] - UT['PreviousDayICU']
+
+UT.drop(columns = 'PreviousDayICU',inplace=True)
+UT.to_excel('UT.xlsx')
+
+
+
+#%%
+UT= UT[UT['date'] >= '2020-04-15' ]
+
+left= UT[UT['date']=='2020-04-05']['date_ordinal']
+right = UT[UT['date']==max(UT['date'])]['date_ordinal']
+                                   
+fig, ax = plt.subplots(figsize = (12,6))
+
+ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Total Hospital Increase',color='blue')
+ax.bar(UT['date_ordinal'], UT['icuIncrease'], label='ICU Increase',color='red')
+ax.legend(loc='upper left')
+
+
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
+ax.axvline(x=OrangeDate, color='orange', linewidth=2)
+# ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=2)
+# ax.annotate'Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
+# ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+
+ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+# ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
+ax.set_xlim(left=left,right=right)
 
 plt.show()
 

@@ -304,6 +304,43 @@ plt.savefig('Utah_Increase_Test.png')
 
 plt.show()
 
+#%%
+    
+UT_1.sort_index()
+
+UT_1['PreviousDayICU'] = UT_1['inIcuCumulative'].shift(-1)
+
+for row in UT_1.iterrows() :
+    UT_1['icuIncrease'] = UT_1['inIcuCumulative'] - UT_1['PreviousDayICU']
+
+UT_1.drop(columns = 'PreviousDayICU',inplace=True)
+
+UT= UT[UT['date'] >= '2020-04-15' ]
+                                   
+fig, ax = plt.subplots(figsize = (12,6))
+watermark()
+ax.bar(UT_1['date_ordinal'], UT_1['hospitalizedIncrease'], label='Total Hospital Increase',color='blue')
+ax.bar(UT_1['date_ordinal'], UT_1['icuIncrease'], label='ICU Increase',color='red')
+ax.legend(loc='upper left')
+plt.title('Hospitalizations and ICU Increase', fontdict={'fontsize':20})
+
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
+ax.axvline(x=OrangeDate, color='orange', linewidth=2)
+# ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate, color='yellow', linewidth=2)
+# ax.annotate'Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
+# ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+
+ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
+# ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
+ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
+
+
+plt.show()
+
 
 # In[6]:
 
