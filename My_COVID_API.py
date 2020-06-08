@@ -111,12 +111,14 @@ fig, ax = plt.subplots(figsize = (12,6))
 watermark()
 
 ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Case Increase',color='blue')
-ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Hospitalized Increase',color='red')
+ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], 
+       label='Hospitalized Increase',color='red')
+
 ax.legend(loc='upper left')
 
 
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,text_loc),color='black',rotation=90,fontsize=13)
@@ -167,7 +169,7 @@ plt.plot(UT['date_ordinal'], UT.rolling_mean3, label='20 Day Average', color='bl
 
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,text_loc),color='black',rotation=90,fontsize=13)
@@ -212,7 +214,7 @@ plt.plot(UT['date_ordinal'], UT.rolling_mean_d2, label='7 Day Average', color='g
 plt.plot(UT['date_ordinal'], UT.rolling_mean_d3, label='20 Day Average', color='blue')
 plt.legend(loc='upper left')
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('Utah Deaths Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Deaths Increase', fontdict={'fontsize':12})
@@ -247,7 +249,7 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('UT Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
-ax.set_xticklabels(new_labels, rotation = 45)
+ax.set_xticklabels(new_labels, rotation = 30)
 
 plt.savefig('UT_Positive_Per_Test.png')
 plt.show()
@@ -279,7 +281,7 @@ ax.legend(loc='upper left')
 
 
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 # ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
@@ -294,9 +296,9 @@ ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
 
-plt.title('Utah Test Increase', fontdict={'fontsize':20})
+plt.title('Utah Test Tests Per Day', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Test Increase', fontdict={'fontsize':12})
+plt.ylabel('Tests', fontdict={'fontsize':12})
 plt.axis('tight')
 plt.savefig('Utah_Increase_Test.png')
 
@@ -313,7 +315,7 @@ fig = sns.pointplot(x = 'date', y = 'positive',
                     data = UT, markers = '.')
 
 x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',
+ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',
                    fontdict={'fontsize':12})
 plt.title('Utah Total Cases', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -379,7 +381,7 @@ fig = sns.pointplot(x = 'date', y = 'death',hue='state',
                     data = FourC, palette = 'Set1', markers ='.')
 
 x_dates = FourC['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('Nearest States: Death Total', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Tot. Deaths', fontdict={'fontsize':12})
@@ -395,7 +397,7 @@ fig = sns.pointplot(x = 'date', y = 'DperP',hue='state',
                     data = FourC, palette = 'Set1', markers ='.')
 
 x_dates = FourC['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('Nearest States: Deaths per Case', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death per Case', fontdict={'fontsize':12})
@@ -429,7 +431,7 @@ plt.legend(loc='upper left')
 
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xlim(CA['date_ordinal'].min() , CA['date_ordinal'].max() )
-ax.set_xticklabels(labels=new_labels, rotation=90, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('California Positive Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive Increase', fontdict={'fontsize':12})
@@ -464,7 +466,7 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 
 
 ax.set_xlim(CA['date_ordinal'].min() , CA['date_ordinal'].max() )
-ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('California Death Increase Rolling Average', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death Increase', fontdict={'fontsize':12})
@@ -499,7 +501,7 @@ new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('CA Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Positive/Test', fontdict={'fontsize':12})
-ax.set_xticklabels(new_labels, rotation = 45)
+ax.set_xticklabels(new_labels, rotation = 30)
 
 
 plt.savefig('CA_Positive_Per_Test.png')
