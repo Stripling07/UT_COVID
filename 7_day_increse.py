@@ -197,20 +197,37 @@ Y = UT_1['totalTestResultsIncrease']
 X = np.array(X).reshape(-1,1)
 
 
+X_i = UT_1['date_ordinal']
+X_i = np.array(X).reshape(-1,1)
+X_t = X_i
+Y_i = UT_1['totalTestResultsIncrease']
+Y_t = UT_1['positiveIncrease']
+X = np.array(X).reshape(-1,1)
 linear_regressor = LinearRegression()  # create object for the class
-linear_regressor.fit(X, Y)  # perform linear regression
-Y_pred = linear_regressor.predict(X)  # make predictions
+linear_regressor.fit(X_t, Y_i)  # perform linear regression
+Y_i_pred = linear_regressor.predict(X)  # make predictions
 
-                     
+
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(X_t, Y_t)  # perform linear regression
+Y_t_pred = linear_regressor.predict(X)  # make predictions
+   
+
+sns.set_style("dark")                  
 fig, ax1 = plt.subplots(figsize = (12,6))
 plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
 
 
 color = 'gray'
 
-ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.50)
-ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], label='Positive Tests',color='red')
-ax1.plot(UT_1['date_ordinal'],Y_pred, color='red',linestyle = '--', label = 'Liniar Regression Tests')
+ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], 
+        label='Total Tests',color='gray',alpha=.50)
+ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], 
+        label='Positive Tests',color='red')
+ax1.plot(UT_1['date_ordinal'],Y_i_pred, color='black',linestyle = '--', 
+         label = 'Liniar Regression Tests')
+ax1.plot(UT_1['date_ordinal'],Y_t_pred, color='red',linestyle = '--', 
+         label = 'Liniar Regression Increase')
 ax1.tick_params(axis='y', labelcolor=color)
 ax1.legend(loc='upper left')
 ax2 = plt.ylabel('Tests', fontdict={'fontsize':12},color=color)
@@ -244,13 +261,7 @@ plt.show()
 #%%
 
 
-X = UT_1['date_ordinal']
 
-Y = UT_1['totalTestResultsIncrease']
-
-linear_regressor = LinearRegression()  # create object for the class
-linear_regressor.fit(X, Y)  # perform linear regression
-Y_pred = linear_regressor.predict(X)  # make predictions
 
 #%%
 

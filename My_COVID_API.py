@@ -42,7 +42,7 @@ df = pd.json_normalize(json_data)
 # and Total Increase Minus Hosptialized Increase (TotMinusHosptializedIncresase)
 
 df['DperP'] = df['death']/df['positive']
-df['PosPerTest']= df['positiveIncrease']/df['totalTestResultsIncrease']
+df['PosPerTest']= df['positiveIncrease']/df['totalTestResultsIncrease']*100
 df['TotMinusHosptializedIncresase'] = np.abs(df['positiveIncrease'] - df['hospitalizedIncrease'])
 
 
@@ -61,10 +61,10 @@ df.to_excel('df.xlsx')
 sns.set()
 # First we look at Utah
 
-def watermark():
+def watermark(loc_x = 0.92, loc_y =0.15):
     """ Puts Property Of David McKenna on LRH corner of plots"""
     
-    fig.text(0.92, 0.15, 'Property of David McKenna \n data from: covidtracking.com',
+    fig.text(loc_x,loc_y, 'Property of David McKenna \n data from: covidtracking.com',
          fontsize=10, color='gray', rotation=270,
          ha='right', va='bottom', alpha=0.75)
     
@@ -245,7 +245,7 @@ plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color
 
 plt.legend(loc='upper right')
 ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max()+1 )
-ax.set_ylim(0,0.3)
+ax.set_ylim(0,30)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('UT Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
@@ -268,20 +268,34 @@ Y = UT_1['totalTestResultsIncrease']
 X = np.array(X).reshape(-1,1)
 
 
+X_i = UT_1['date_ordinal']
+X_i = np.array(X).reshape(-1,1)
+X_t = X_i
+Y_i = UT_1['totalTestResultsIncrease']
+Y_t = UT_1['positiveIncrease']
+X = np.array(X).reshape(-1,1)
 linear_regressor = LinearRegression()  # create object for the class
-linear_regressor.fit(X, Y)  # perform linear regression
-Y_pred = linear_regressor.predict(X)  # make predictions
+linear_regressor.fit(X_t, Y_i)  # perform linear regression
+Y_i_pred = linear_regressor.predict(X)  # make predictions
 
-               
+
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(X_t, Y_t)  # perform linear regression
+Y_t_pred = linear_regressor.predict(X)  # make predictions
+ 
+
+sns.set_style("dark")                    
 fig, ax1 = plt.subplots(figsize = (12,6))
-plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
-sns.set_style("whitegrid", {'axes.grid' : False})
 
+plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
+
+watermark(loc_x = 0.93)
 color = 'gray'
 
-ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.75)
+ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.50)
 ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], label='Positive Tests',color='red')
-ax1.plot(UT_1['date_ordinal'],Y_pred, color='red',linestyle = '--', label = 'Liniar Regression Tests')
+ax1.plot(UT_1['date_ordinal'],Y_i_pred, color='black',linestyle = '--', label = 'Liniar Regression Tests')
+ax1.plot(UT_1['date_ordinal'],Y_t_pred, color='red',linestyle = '--', label = 'Liniar Regression Increase')
 ax1.tick_params(axis='y', labelcolor=color)
 ax1.legend(loc='upper left')
 ax2 = plt.ylabel('Tests', fontdict={'fontsize':12},color=color)
@@ -291,13 +305,15 @@ ax1.set_xticklabels(new_labels, rotation = 30)
 ax2 = ax1.twinx() 
 
 color = 'green'
-ax2 = plt.scatter(UT_1['date_ordinal'], UT_1['PosPerTest'],  marker='+',s=100,color=color )
+ax2 = plt.scatter(UT_1['date_ordinal'], UT_1['PosPerTest'],
+                  marker='+',s=100,color=color ,label='Percent Positive Tests')
 ax2=plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean2, label='7 Day Average', color='green')
 #ax2 =plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color='blue')
 ax2 = plt.ylabel('Positive/Test', fontdict={'fontsize':12},color=color)
 ax2=plt.tick_params(axis='y', labelcolor=color)
-ax2 = plt.ylim(0,0.25)
+ax2 = plt.ylim(0,25)
 ax2 = plt.legend(loc='upper right')
+
 
 
 fig=plt.tight_layout()
@@ -311,7 +327,7 @@ plt.show()
 
 
 #%%
-
+sns.set()
 # UT = df[df['state']=='UT']
 
 # UT.to_excel('UT.xlsx')
@@ -486,7 +502,8 @@ plt.show()
 
 
 
-fig, ax = plt.subplots(figsize = (12,6))    
+fig, ax = plt.subplots(figsize = (12,6))   
+watermark() 
 fig = sns.pointplot(x = 'date', y = 'DperP',hue='state',
                     data = FourC, palette = 'Set1', markers ='.')
 
@@ -589,7 +606,7 @@ plt.plot(CA_1['date_ordinal'], CA_1.rolling_mean3, label='20 Day Average', color
 
 plt.legend(loc='upper right')
 ax.set_xlim(CA_1['date_ordinal'].min() , CA_1['date_ordinal'].max()+ 1 )
-ax.set_ylim(0,0.5)
+ax.set_ylim(0,25)
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 plt.title('CA Positve Per Test', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
