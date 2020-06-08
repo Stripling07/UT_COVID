@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import requests, json
 import matplotlib.dates as mdates
-import matplotlib.dates as mdates
+from sklearn.linear_model import LinearRegression
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -183,33 +183,111 @@ UT.to_excel('UT.xlsx')
 
 
 
+
+
+
 #%%
-UT= UT[UT['date'] >= '2020-04-15' ]
+UT_1= UT[UT['date'] >= '2020-04-15' ]
 
-left= UT[UT['date']=='2020-04-05']['date_ordinal']
-right = UT[UT['date']==max(UT['date'])]['date_ordinal']
-                                   
-fig, ax = plt.subplots(figsize = (12,6))
+UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods= -20)
+UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
 
-ax.bar(UT['date_ordinal'], UT['hospitalizedIncrease'], label='Total Hospital Increase',color='blue')
-ax.bar(UT['date_ordinal'], UT['icuIncrease'], label='ICU Increase',color='red')
-ax.legend(loc='upper left')
+X = UT_1['date_ordinal']
+Y = UT_1['totalTestResultsIncrease']
+X = np.array(X).reshape(-1,1)
 
 
-new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
-ax.axvline(x=OrangeDate, color='orange', linewidth=2)
-# ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
-ax.axvline( x=YellowDate, color='yellow', linewidth=2)
-# ax.annotate'Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
-ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
-# ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(X, Y)  # perform linear regression
+Y_pred = linear_regressor.predict(X)  # make predictions
 
-ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
-# ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
-ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
-ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
-ax.set_xlim(left=left,right=right)
+                     
+fig, ax1 = plt.subplots(figsize = (12,6))
+plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
+
+
+color = 'gray'
+
+ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.50)
+ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], label='Positive Tests',color='red')
+ax1.plot(UT_1['date_ordinal'],Y_pred, color='red',linestyle = '--', label = 'Liniar Regression Tests')
+ax1.tick_params(axis='y', labelcolor=color)
+ax1.legend(loc='upper left')
+ax2 = plt.ylabel('Tests', fontdict={'fontsize':12},color=color)
+new_labels = [date.fromordinal(int(item)) for item in ax1.get_xticks()]
+ax1.set_xticklabels(new_labels, rotation = 30)
+
+ax2 = ax1.twinx() 
+
+color = 'green'
+ax2 = plt.scatter(UT_1['date_ordinal'], UT_1['PosPerTest'],  marker='+',s=100,color=color )
+ax2=plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean2, label='7 Day Average', color='green')
+#ax2 =plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color='blue')
+ax2 = plt.ylabel('Positive/Test', fontdict={'fontsize':12},color=color)
+ax2=plt.tick_params(axis='y', labelcolor=color)
+ax2 = plt.ylim(0,0.25)
+ax2 = plt.legend(loc='upper right')
+
+
+
+fig=plt.tight_layout()
+
+plt.savefig('UT_Test_+_Positive_Per_Test.png')
+
+
+
 
 plt.show()
 
+
+
+#%%
+
+
+X = UT_1['date_ordinal']
+
+Y = UT_1['totalTestResultsIncrease']
+
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(X, Y)  # perform linear regression
+Y_pred = linear_regressor.predict(X)  # make predictions
+
+#%%
+
+# ## Investigating the percentage of tests that return positive results:
+# ### If this number remains high it shows that we are not testing enough. 
+
+UT_2 = UT[UT['date'] >= '2020-04-15' ]
+
+UT_2['rolling_mean'] = UT_2.loc[:,'PosPerTest'].rolling(3).mean().shift(periods= -3)
+UT_2['rolling_mean2'] = UT_2.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
+UT_2['rolling_mean3'] = UT_2.loc[:,'PosPerTest'].rolling(20).mean().shift(periods= -20)
+
+
+fig, ax = plt.subplots(figsize = (12,6))
+
+
+fig = sns.regplot(x = 'date_ordinal', y = 'PosPerTest', data = UT, fit_reg=False)
+plt.plot(UT_2['date_ordinal'], UT_2.rolling_mean, label='3 Day Average', color='red')
+plt.plot(UT_2['date_ordinal'], UT_2.rolling_mean2, label='7 Day Average', color='green')
+plt.plot(UT_2['date_ordinal'], UT_2.rolling_mean3, label='20 Day Average', color='blue')
+
+plt.legend(loc='upper right')
+ax.set_xlim(UT_1['date_ordinal'].min() , UT_1['date_ordinal'].max()+1 )
+ax.set_ylim(0,0.3)
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+plt.title('UT Positve Per Test', fontdict={'fontsize':20})
+plt.xlabel('Date', fontdict={'fontsize':12})
+plt.ylabel('Positive/Test', fontdict={'fontsize':12})
+ax.set_xticklabels(new_labels, rotation = 30)
+
+plt.savefig('UT_Positive_Per_Test.png')
+plt.show()
+
+#%%
+
+
+X = UT_1['date_ordinal']
+Y = UT_1['totalTestResultsIncrease']
+
+print(X.shape,Y.shape)

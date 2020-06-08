@@ -16,7 +16,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import requests, json
 import matplotlib.dates as mdates
-import matplotlib.dates as mdates
+from sklearn.linear_model import LinearRegression
+
 import warnings
 warnings.filterwarnings('ignore')
 #pd.__version__
@@ -254,6 +255,61 @@ ax.set_xticklabels(new_labels, rotation = 30)
 plt.savefig('UT_Positive_Per_Test.png')
 plt.show()
 
+
+
+#%%
+UT_1= UT[UT['date'] >= '2020-04-15' ]
+
+UT_1['rolling_mean3'] = UT_1.loc[:,'PosPerTest'].rolling(20).mean().shift(periods= -20)
+UT_1['rolling_mean2'] = UT_1.loc[:,'PosPerTest'].rolling(7).mean().shift(periods= -7)
+
+X = UT_1['date_ordinal']
+Y = UT_1['totalTestResultsIncrease']
+X = np.array(X).reshape(-1,1)
+
+
+linear_regressor = LinearRegression()  # create object for the class
+linear_regressor.fit(X, Y)  # perform linear regression
+Y_pred = linear_regressor.predict(X)  # make predictions
+
+               
+fig, ax1 = plt.subplots(figsize = (12,6))
+plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
+sns.set_style("whitegrid", {'axes.grid' : False})
+
+color = 'gray'
+
+ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.75)
+ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], label='Positive Tests',color='red')
+ax1.plot(UT_1['date_ordinal'],Y_pred, color='red',linestyle = '--', label = 'Liniar Regression Tests')
+ax1.tick_params(axis='y', labelcolor=color)
+ax1.legend(loc='upper left')
+ax2 = plt.ylabel('Tests', fontdict={'fontsize':12},color=color)
+new_labels = [date.fromordinal(int(item)) for item in ax1.get_xticks()]
+ax1.set_xticklabels(new_labels, rotation = 30)
+
+ax2 = ax1.twinx() 
+
+color = 'green'
+ax2 = plt.scatter(UT_1['date_ordinal'], UT_1['PosPerTest'],  marker='+',s=100,color=color )
+ax2=plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean2, label='7 Day Average', color='green')
+#ax2 =plt.plot(UT_1['date_ordinal'], UT_1.rolling_mean3, label='20 Day Average', color='blue')
+ax2 = plt.ylabel('Positive/Test', fontdict={'fontsize':12},color=color)
+ax2=plt.tick_params(axis='y', labelcolor=color)
+ax2 = plt.ylim(0,0.25)
+ax2 = plt.legend(loc='upper right')
+
+
+fig=plt.tight_layout()
+
+plt.savefig('UT_Test_+_Positive_Per_Test.png')
+
+
+
+
+plt.show()
+
+
 #%%
 
 # UT = df[df['state']=='UT']
@@ -323,22 +379,23 @@ ax.bar(UT_1['date_ordinal'], UT_1['hospitalizedIncrease'], label='Total Hospital
 ax.bar(UT_1['date_ordinal'], UT_1['icuIncrease'], label='ICU Increase',color='red')
 ax.legend(loc='upper left')
 plt.title('Hospitalizations and ICU Increase', fontdict={'fontsize':20})
+plt.ylabel('Hospitalized Cases', fontdict={'fontsize':12})
 
-new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+AZnew_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
-# ax.annotate('Code Orange Date', (OrangeDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange Date', (OrangeDate - 2,19.5),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate, color='yellow', linewidth=2)
-# ax.annotate'Code Yellow Date', (YellowDate - 2,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Yellow Date', (YellowDate - 2,19.5),color='black',rotation=90,fontsize=13)
 ax.axvline( x=ProtestDate, color='purple', linewidth=1.5)
-# ax.annotate('Protest Start Date', (ProtestDate - 2 ,240),color='black',rotation=90,fontsize=13)
+ax.annotate('Protest Start Date', (ProtestDate - 1 ,20),color='black',rotation=90,fontsize=13)
 
 ax.axvline(x=OrangeDate + 7, color='orange', linewidth=2, linestyle = '--')
-# ax.annotate('Code Orange + 7-Days', (OrangeDate +5,210),color='black',rotation=90,fontsize=13)
+ax.annotate('Code Orange + 7-Days', (OrangeDate +8,16.5),color='black',rotation=90,fontsize=13)
 ax.axvline( x=YellowDate + 7, color='yellow', linewidth=2, linestyle = '--')
 ax.axvline( x=ProtestDate + 7, color='purple', linewidth=2, linestyle = '--')
 
-
+plt.savefig('ICU.png')
 plt.show()
 
 
@@ -487,7 +544,6 @@ plt.show()
 CA['rolling_mean_d'] = CA.loc[:,'deathIncrease'].rolling(3).mean().shift(periods=-2)
 CA['rolling_mean_d2'] = CA.loc[:,'deathIncrease'].rolling(7).mean().shift(periods=-6)
 CA['rolling_mean_d3'] = CA.loc[:,'deathIncrease'].rolling(20).mean().shift(periods=-19)
-#x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
 CA['date_ordinal'] = pd.to_datetime(CA['date']).apply(lambda date: date.toordinal())
 
 fig, ax = plt.subplots(figsize = (12,6))
