@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import requests, json
 import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
 from sklearn.linear_model import LinearRegression
 
 import warnings
@@ -288,14 +289,18 @@ sns.set_style("dark")
 fig, ax1 = plt.subplots(figsize = (12,6))
 
 plt.title('UT Tests and Positive per Test', fontdict={'fontsize':20})
+watermark()
 
-watermark(loc_x = 0.93)
 color = 'gray'
 
-ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], label='Total Tests',color='gray',alpha=.50)
-ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], label='Positive Tests',color='red')
-ax1.plot(UT_1['date_ordinal'],Y_i_pred, color='black',linestyle = '--', label = 'Liniar Regression Tests')
-ax1.plot(UT_1['date_ordinal'],Y_t_pred, color='red',linestyle = '--', label = 'Liniar Regression Increase')
+ax1.bar(UT_1['date_ordinal'], UT_1['totalTestResultsIncrease'], 
+        label='Total Tests',color='gray',alpha=0.50)
+ax1.bar(UT_1['date_ordinal'], UT_1['positiveIncrease'], 
+        label='Positive Tests',color='red',alpha=0.55)
+ax1.plot(UT_1['date_ordinal'],Y_i_pred, color='black',
+         linestyle = '--', linewidth = 3, label = 'Linear Regression Tests')
+ax1.plot(UT_1['date_ordinal'],Y_t_pred, color='purple',
+         linestyle = '--', linewidth = 3,label = 'Linear Regression Increase')
 ax1.tick_params(axis='y', labelcolor=color)
 ax1.legend(loc='upper left')
 ax2 = plt.ylabel('Tests', fontdict={'fontsize':12},color=color)
@@ -347,11 +352,13 @@ ProtestDate = int(ProtestDate)
 fig, ax = plt.subplots(figsize = (12,6))
 watermark()
 
-ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'], label='Total Test Increase',color='green')
-ax.bar(UT['date_ordinal'], UT['positiveIncrease'], label='Positive Tests',color='red')
+ax.bar(UT['date_ordinal'], UT['totalTestResultsIncrease'],
+       label='Total Test Increase',color='green',alpha=0.75)
+ax.bar(UT['date_ordinal'], UT['positiveIncrease'],
+       label='Positive Tests',color='red',alpha=0.75)
+
+
 ax.legend(loc='upper left')
-
-
 new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 
@@ -391,13 +398,15 @@ UT= UT[UT['date'] >= '2020-04-15' ]
                                    
 fig, ax = plt.subplots(figsize = (12,6))
 watermark()
-ax.bar(UT_1['date_ordinal'], UT_1['hospitalizedIncrease'], label='Total Hospital Increase',color='blue')
-ax.bar(UT_1['date_ordinal'], UT_1['icuIncrease'], label='ICU Increase',color='red')
+ax.bar(UT_1['date_ordinal'], UT_1['hospitalizedIncrease'],
+       label='Total Hospital Increase',color='blue',alpha=0.75)
+ax.bar(UT_1['date_ordinal'], UT_1['icuIncrease'],
+       label='ICU Increase',color='red',alpha=0.75)
 ax.legend(loc='upper left')
 plt.title('Hospitalizations and ICU Increase', fontdict={'fontsize':20})
 plt.ylabel('Hospitalized Cases', fontdict={'fontsize':12})
 
-AZnew_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
 ax.axvline(x=OrangeDate, color='orange', linewidth=2)
 ax.annotate('Code Orange Date', (OrangeDate - 2,19.5),color='black',rotation=90,fontsize=13)
@@ -415,106 +424,58 @@ plt.savefig('ICU.png')
 plt.show()
 
 
-# In[6]:
-
- 
-fig, ax = plt.subplots(figsize = (12,6))
-watermark()
-  
-fig = sns.pointplot(x = 'date', y = 'positive',
-                    data = UT, markers = '.')
-
-x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',
-                   fontdict={'fontsize':12})
-plt.title('Utah Total Cases', fontdict={'fontsize':20})
-plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
-
-#plt.savefig('Utah Total Cases.png')
-plt.show()
-
-
-# In[7]:
-
-
-# fig, ax = plt.subplots(figsize = (12,6))    
-# fig = sns.pointplot(x = 'date', y = 'positive',
-#                     data = UT, markers='.')
-
-# x_dates = UT['date'].dt.strftime('%m-%d').sort_values().unique()
-# ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
-# plt.title('Utah Total Cases (log)', fontdict={'fontsize':20})
-# plt.xlabel('Date', fontdict={'fontsize':12})
-# plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
-# ax.set( yscale='log')
-
-# #plt.savefig('Utah Total Cases (log).png')
-# plt.show()
 
 
 
-
-
-# In[9]:
-
-
-FourC = UT.append(df[df['state']=='ID']).append(df[df['state']=='CO']).append(df[df['state']=='AZ']).append(df[df['state']=='NM']).append(df[df['state']=='NV']).append(df[df['state']=='WY'])
-
-
-# In[10]:
-
-
-fig, ax = plt.subplots(figsize = (12,6))
-watermark()
-
-fig = sns.pointplot(x = 'date', y = 'positive',hue='state',
-                    data = FourC, palette = 'Set1', markers ='.')
-
-x_dates = FourC['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=90, ha='right',fontdict={'fontsize':12})
-plt.title('Nearest States: Total', fontdict={'fontsize':20})
-plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
-
-#plt.savefig('Four Corners Total Cases.png')
-plt.show()
-
-
-# In[11]:
-
+#%%
+df['Date'] = pd.to_datetime(df['date'].astype(str), infer_datetime_format=True)
+fc = df[df['state'].isin(['UT','AZ','CO','NM'])]
+fc = fc[fc['Date']>= '03-15-2020']
 
 fig, ax = plt.subplots(figsize = (12,6)) 
 watermark()
+fig = fc.groupby(['Date','state']).sum()['DperP'].unstack().plot(ax=ax)
 
-fig = sns.pointplot(x = 'date', y = 'death',hue='state', 
-                    data = FourC, palette = 'Set1', markers ='.')
+       
 
-x_dates = FourC['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',fontdict={'fontsize':12})
-plt.title('Nearest States: Death Total', fontdict={'fontsize':20})
-plt.xlabel('Date', fontdict={'fontsize':12})
-plt.ylabel('Tot. Deaths', fontdict={'fontsize':12})
+# Define the date format
+date_form = DateFormatter("%m-%d")
+ax.xaxis.set_major_formatter(date_form)
 
+# Ensure a major tick for each week using (interval=1) 
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
+plt.xticks(rotation=30)
 
-plt.show()
-
-
-
-
-fig, ax = plt.subplots(figsize = (12,6))   
-watermark() 
-fig = sns.pointplot(x = 'date', y = 'DperP',hue='state',
-                    data = FourC, palette = 'Set1', markers ='.')
-
-x_dates = FourC['date'].dt.strftime('%m-%d').sort_values().unique()
-ax.set_xticklabels(labels=x_dates, rotation=30, ha='right',fontdict={'fontsize':12})
 plt.title('Nearest States: Deaths per Case', fontdict={'fontsize':20})
 plt.xlabel('Date', fontdict={'fontsize':12})
 plt.ylabel('Death per Case', fontdict={'fontsize':12})
 
 
 plt.show()
+
+#%%
+
+fig, ax = plt.subplots(figsize = (12,6)) 
+watermark()
+fig = fc.groupby(['Date','state']).sum()['death'].unstack().plot(ax=ax)
+
+       
+
+# Define the date format
+date_form = DateFormatter("%m-%d")
+ax.xaxis.set_major_formatter(date_form)
+
+# Ensure a major tick for each week using (interval=1) 
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
+plt.xticks(rotation=30)
+
+plt.title('Nearest States: Total Deaths' , fontdict={'fontsize':20})
+plt.xlabel('Date', fontdict={'fontsize':12})
+plt.ylabel('Deaths', fontdict={'fontsize':12})
+
+
+plt.show()
+
 
 
 #%%

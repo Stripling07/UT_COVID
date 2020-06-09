@@ -259,8 +259,35 @@ plt.show()
 
 
 #%%
+FourC = df[df['state']=='UT'].append(df[df['state']=='ID']).append(df[df['state']=='CO']).append(df[df['state']=='AZ']).append(df[df['state']=='NM']).append(df[df['state']=='NV']).append(df[df['state']=='WY'])
 
 
+
+#FourC['date'] = pd.to_datetime(FourC['date'])
+
+
+#FourC['date_ordinal'] = pd.to_datetime(FourC['date']).apply(lambda date: date.toordinal()) 
+
+datelist = pd.date_range(pd.datetime(FourC['date']).strftime('%Y-%m-%d'), periods=42).tolist()
+
+
+print(datelist)
+# watermark()
+
+# fig = sns.pointplot(x = 'date_ordinal', y = 'positive',hue='state',
+#                     data = FourC, palette = 'Set1', markers ='.')
+
+
+# new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
+
+
+# ax.set_xticklabels(labels=new_labels, rotation=30, ha='right',fontdict={'fontsize':12})
+# plt.title('Nearest States: Total', fontdict={'fontsize':20})
+# plt.xlabel('Date', fontdict={'fontsize':12})
+# plt.ylabel('Tot. Cases', fontdict={'fontsize':12})
+
+# #plt.savefig('Four Corners Total Cases.png')
+# plt.show()
 
 
 #%%
