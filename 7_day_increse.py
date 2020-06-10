@@ -81,34 +81,43 @@ plt.ylabel('7 Day Avg Case Increase')
 #%%
 
 
-ten_states = df_2.state
+# ten_states = df_2.state
 
 
 
-df_1.reset_index(inplace=True)
-df_3 = pd.DataFrame()
+# df_1.reset_index(inplace=True)
+# df_3 = pd.DataFrame()
 
-for state in ten_states :
+# for state in ten_states :
 
     
-    data = df_1[df_1['state']==str(state)]
+#     data = df_1[df_1['state']==str(state)]
    
 
-    df_3 = pd.concat([df_3,data])
+#     df_3 = pd.concat([df_3,data])
     
     
   
-# df_3.to_excel('df_3.xlsx')    
+# # df_3.to_excel('df_3.xlsx')    
 
-fig, ax = plt.subplots(figsize = (12,6))
-new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
-
-
-ax.sns.pointplot(data=df_3, x='date_ordinal',y='posDiff',hue='state', marker = '.')
-
-ax.set_xlim(df_3['date_ordinal'].min()  , df_3['date_ordinal'].max() )
-ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+# fig, ax = plt.subplots(figsize = (12,6))
+# new_labels = [date.fromordinal(int(item)) for item in ax.get_xticks()]
 
 
-plt.show()
-    
+# ax.sns.pointplot(data=df_3, x='date_ordinal',y='posDiff',hue='state', marker = '.')
+
+# ax.set_xlim(df_3['date_ordinal'].min()  , df_3['date_ordinal'].max() )
+# ax.set_xticklabels(labels=new_labels, rotation=45, ha='right',fontdict={'fontsize':12})
+
+
+# plt.show()
+
+#%%
+
+names = ['State','Census','Estimates Base','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019']
+
+pop = pd.read_excel('pop_data.xlsx',header=4,names=names)
+pop.drop(columns=['Census','Estimates Base','2010','2011','2012','2013','2014','2015','2016','2017','2018'],inplace=True)
+
+
+print(pop[pop['State']== '.Alabama'])    
