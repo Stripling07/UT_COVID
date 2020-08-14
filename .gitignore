@@ -1,3 +1,5 @@
 *.png
 Old_Versions
+.DS_Store
+Covid-19_Project.ipynb
 
