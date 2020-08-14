@@ -105,7 +105,8 @@ def Merge_Pop(df_to_merge):
     return df_pop
 
 def States_Won(df):
-    """Adds catagorical column of who won each state in 2016"""
+    """# Adds a categorical column of who won each state in the 2016 election 
+    and creates a new df_election without US Territories"""
     
     states_won = {
     'AK': 'Trump',
@@ -402,7 +403,8 @@ def Basic_Analysis_Roll(df, state_abbrev, start_date = '2020-03-15', test_date='
     
     else :
         print("\n\n No ICU data available")
-        
+
+#%%
         
 def annot_tot(df,col,value) :
     today = df.date.max()
